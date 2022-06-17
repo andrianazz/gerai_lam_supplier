@@ -53,6 +53,7 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
             style: primaryText.copyWith(
               fontWeight: FontWeight.w700,
               fontSize: 18,
+              color: Colors.black,
             ),
           ),
         ),
@@ -77,7 +78,6 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
               icon: const Icon(
                 Icons.arrow_back_ios,
                 size: 14,
-                color: primaryColor,
               ),
             ),
           ),
@@ -124,7 +124,6 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
                   child: const Icon(
                     Icons.camera_alt_rounded,
                     size: 40,
-                    color: primaryColor,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -173,7 +172,7 @@ class _UploadPhotoPageState extends State<UploadPhotoPage> {
                     child: const Icon(
                       Icons.folder_rounded,
                       size: 40,
-                      color: primaryColor,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 10),

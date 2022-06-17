@@ -1,14 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gerai_lam_supplier/pages/getstarted_page.dart';
 import 'package:gerai_lam_supplier/pages/login_page.dart';
 import 'package:gerai_lam_supplier/pages/main_page.dart';
-import 'package:gerai_lam_supplier/pages/sign_up_page.dart';
 import 'package:gerai_lam_supplier/pages/splash_page.dart';
 import 'package:gerai_lam_supplier/pages/upload_photo_page.dart';
-import 'package:gerai_lam_supplier/theme.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: primaryColor,
+      statusBarColor: Color(0xffFFF59E),
     ));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -27,7 +28,6 @@ class MyApp extends StatelessWidget {
         '/loginPage': (context) => LoginPage(),
         '/getstarted': (context) => const GetStartedPage(),
         '/login': (context) => const LoginPage(),
-        '/signup': (context) => const SignUpPage(),
         '/uploadPhoto': (context) => const UploadPhotoPage(),
       },
       home: SplashPage(),

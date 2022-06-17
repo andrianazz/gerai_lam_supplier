@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gerai_lam_supplier/pages/main_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../services/auth_service.dart';
 import '../theme.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,16 +15,44 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  late SharedPreferences preferences;
+
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
   bool isSecure = true;
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  Future init() async {
+    preferences = await SharedPreferences.getInstance();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          background(),
-          content(),
-        ],
-      ),
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text(snapshot.error.toString()));
+        } else if (snapshot.hasData) {
+          return MainPage();
+        } else {
+          return Scaffold(
+            body: Stack(
+              children: [
+                background(),
+                content(),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -47,7 +80,6 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   icon: const Icon(
                     Icons.arrow_back_ios_rounded,
-                    color: Colors.white,
                   ),
                 ),
                 Row(
@@ -60,7 +92,6 @@ class _LoginPageState extends State<LoginPage> {
                         "Masuk",
                         style: primaryText.copyWith(
                           fontSize: 34,
-                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -85,6 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 5),
                 TextField(
+                  controller: phoneController,
                   decoration: InputDecoration(
                     filled: true,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10),
@@ -100,13 +132,48 @@ class _LoginPageState extends State<LoginPage> {
                     fillColor: const Color(0xfff2f2f2),
                   ),
                 ),
+                SizedBox(height: 10),
+                Text(
+                  "Password",
+                  style: primaryText.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                TextField(
+                  controller: passwordController,
+                  obscureText: isSecure,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        isSecure ? Icons.visibility_off : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isSecure = !isSecure;
+                        });
+                      },
+                    ),
+                    filled: true,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                    focusColor: const Color(0xfff2f2f2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: const BorderSide(
+                        width: 0,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                    hintText: "Masukkan Password",
+                    fillColor: const Color(0xfff2f2f2),
+                  ),
+                ),
                 Container(
                   width: double.infinity,
                   child: Text(
                     'Lupa Password?',
                     style: primaryText.copyWith(
                       fontSize: 10,
-                      color: primaryColor,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.right,
@@ -117,7 +184,9 @@ class _LoginPageState extends State<LoginPage> {
                   height: 54,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      isSupplierPhone(phoneController.text.toString());
+                    },
                     style: ElevatedButton.styleFrom(
                       primary: primaryColor,
                       shape: RoundedRectangleBorder(
@@ -128,23 +197,8 @@ class _LoginPageState extends State<LoginPage> {
                       "Masuk",
                       style: primaryText.copyWith(
                           fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: 18),
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      child: Text(
-                        "Tidak ada akun? DAFTAR",
-                        style: primaryText.copyWith(
-                          color: primaryColor,
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -154,5 +208,52 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  isSupplierPhone(String phone) {
+    Map<String, dynamic> data = {};
+
+    CollectionReference employees = firestore.collection('supplier');
+    employees.where('phone', isEqualTo: phone).get().then((snapshot) {
+      if (snapshot.docs.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Anda belum mendaftarkan diri!",
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: redColor,
+          ),
+        );
+      } else {
+        data = snapshot.docs.first.data() as Map<String, dynamic>;
+        print(data['email']);
+
+        preferences.setString('name', data['name'].toString());
+        preferences.setString('imageUrl', data['imageUrl'].toString());
+        preferences.setString('id', data['id'].toString());
+        preferences.setString('email', data['email'].toString());
+        preferences.setString('phone', data['phone'].toString());
+        preferences.setString('zone', data['zone'].toString());
+
+        return AuthService().signIn(
+          context,
+          data['email'].toString(),
+          passwordController.text.trim(),
+        );
+      }
+
+      if (data == null) {
+        return ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Anda belum mendaftarkan diri!",
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: redColor,
+          ),
+        );
+      }
+    });
   }
 }

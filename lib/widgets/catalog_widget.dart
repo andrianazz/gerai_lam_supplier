@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gerai_lam_supplier/models/product_model.dart';
+import 'package:intl/intl.dart';
 
 import '../theme.dart';
 
@@ -41,7 +42,7 @@ class CatalogWidget extends StatelessWidget {
                   topLeft: Radius.circular(10),
                 ),
                 image: DecorationImage(
-                  image: NetworkImage(product!.imageUrl!),
+                  image: NetworkImage(product!.imageUrl![0].toString()),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -53,7 +54,7 @@ class CatalogWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product!.name!,
+                    product!.nama!,
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                     style: primaryText.copyWith(
@@ -61,9 +62,10 @@ class CatalogWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Rp. ${product!.price!.toString()}',
+                    NumberFormat.currency(name: 'Rp. ', decimalDigits: 0)
+                        .format(product!.harga_jual!),
                     style: primaryText.copyWith(
-                      color: primaryColor,
+                      color: greenColor,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                     ),
@@ -73,7 +75,7 @@ class CatalogWidget extends StatelessWidget {
                     width: double.infinity,
                     child: Center(
                       child: Text(
-                        "STOK ${product!.stok!.toString()}",
+                        'STOK ${NumberFormat.currency(name: '', decimalDigits: 0).format(product!.stok!)}',
                         style: primaryText.copyWith(
                           fontWeight: FontWeight.w700,
                         ),

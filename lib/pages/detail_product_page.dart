@@ -1,11 +1,18 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/product_model.dart';
 import '../theme.dart';
 
-class DetailProductPage extends StatelessWidget {
+class DetailProductPage extends StatefulWidget {
   ProductModel? product;
   DetailProductPage({Key? key, this.product}) : super(key: key);
 
+  @override
+  State<DetailProductPage> createState() => _DetailProductPageState();
+}
+
+class _DetailProductPageState extends State<DetailProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,23 +39,8 @@ class DetailProductPage extends StatelessWidget {
                       child: Icon(
                         Icons.arrow_back_ios,
                         size: 12,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: secondaryColor.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(9),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.favorite_border,
-                      size: 24,
-                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -62,14 +54,26 @@ class DetailProductPage extends StatelessWidget {
   }
 
   Widget image() {
-    return Container(
-      width: double.infinity,
-      height: 326,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage(product!.imageUrl!),
-          fit: BoxFit.cover,
-        ),
+    return CarouselSlider(
+      items: widget.product!.imageUrl!
+          .map(
+            (e) => Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(e),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          )
+          .toList(),
+      options: CarouselOptions(
+        height: 290,
+        initialPage: 0,
+        autoPlay: true,
+        autoPlayInterval: const Duration(seconds: 5),
+        viewportFraction: 1,
       ),
     );
   }
@@ -97,7 +101,7 @@ class DetailProductPage extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    product!.name!,
+                    widget.product!.nama!,
                     style: primaryText.copyWith(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
@@ -108,23 +112,15 @@ class DetailProductPage extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
-                  child: RichText(
-                    text: TextSpan(
-                      text: 'Rp ${product!.price.toString()}',
-                      style: primaryText.copyWith(
-                          color: primaryColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700),
-                      children: [
-                        TextSpan(
-                          text: '/ kg',
-                          style: primaryText.copyWith(
-                            fontSize: 14,
-                            color: greyColor,
-                          ),
-                        ),
-                      ],
-                    ),
+                  child: Text(
+                    NumberFormat.currency(
+                      name: 'Rp. ',
+                      decimalDigits: 0,
+                    ).format(widget.product!.harga_jual!),
+                    style: primaryText.copyWith(
+                        color: greenColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700),
                   ),
                 ),
                 const SizedBox(height: 25),
@@ -138,7 +134,7 @@ class DetailProductPage extends StatelessWidget {
                           Text(
                             "Deskripsi",
                             style: primaryText.copyWith(
-                              color: primaryColor,
+                              color: greenColor,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -167,7 +163,7 @@ class DetailProductPage extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    product!.description!,
+                    widget.product!.deskripsi!,
                     style: primaryText.copyWith(fontSize: 13),
                     overflow: TextOverflow.clip,
                   ),
@@ -186,7 +182,7 @@ class DetailProductPage extends StatelessWidget {
                       style: primaryText.copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -204,7 +200,7 @@ class DetailProductPage extends StatelessWidget {
                           color: secondaryColor,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: primaryColor,
+                            color: Colors.black,
                             width: 2,
                           ),
                         ),
@@ -213,19 +209,22 @@ class DetailProductPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Barang Masuk",
+                              "Barang Awal",
                               style: primaryText.copyWith(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
-                                color: primaryColor,
+                                color: Colors.black,
                               ),
                             ),
                             Text(
-                              "400",
+                              NumberFormat.currency(
+                                name: '',
+                                decimalDigits: 0,
+                              ).format(widget.product!.stok_awal!),
                               style: primaryText.copyWith(
                                 fontSize: 48,
                                 fontWeight: FontWeight.w700,
-                                color: primaryColor,
+                                color: Colors.black,
                               ),
                             )
                           ],
@@ -247,7 +246,7 @@ class DetailProductPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Barang Keluar",
+                              "Barang Terjual",
                               style: primaryText.copyWith(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w700,
@@ -255,7 +254,11 @@ class DetailProductPage extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "75",
+                              NumberFormat.currency(
+                                name: '',
+                                decimalDigits: 0,
+                              ).format(widget.product!.stok_awal! -
+                                  widget.product!.stok!),
                               style: primaryText.copyWith(
                                 fontSize: 48,
                                 fontWeight: FontWeight.w700,
@@ -290,7 +293,10 @@ class DetailProductPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${product!.stok!.toString()}",
+                        NumberFormat.currency(
+                          name: '',
+                          decimalDigits: 0,
+                        ).format(widget.product!.stok!),
                         style: primaryText.copyWith(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,

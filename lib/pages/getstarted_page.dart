@@ -42,11 +42,10 @@ class GetStartedPage extends StatelessWidget {
           ),
           const SizedBox(height: 70),
           Text(
-            "Aplikasi Toko adalah solusi untuk Grocery Belanja semua yang Anda butuhkan",
+            "Mitra UMKM adalah solusi untuk pengelola Grocery yang anda butuhkan",
             style: primaryText.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.w500,
-              color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),
@@ -60,12 +59,11 @@ class GetStartedPage extends StatelessWidget {
               Navigator.pushNamed(context, '/login');
             },
             child: Text(
-              "Mulai",
+              "MULAI",
               style: primaryText.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: primaryColor,
-              ),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black),
             ),
           )
         ],
