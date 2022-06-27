@@ -46,10 +46,21 @@ dependencies:
   url_launcher:
   shared_preferences: ^2.0.15
   uuid:
+  rename: ^2.0.1
+  flutter_local_notifications:
+  firebase_messaging: ^11.4.2
+  overlay_support:
+  timezone:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.9.2"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/app_logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -1,9 +1,13 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gerai_lam_supplier/pages/catalog_page.dart';
 import 'package:gerai_lam_supplier/pages/profile_page.dart';
 import 'package:gerai_lam_supplier/pages/sales_page.dart';
 import 'package:gerai_lam_supplier/pages/stock_page.dart';
+import 'package:gerai_lam_supplier/services/notification_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import '../theme.dart';
 
@@ -15,8 +19,34 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationService.init();
+    tz.initializeTimeZones();
+    getPref();
+  }
+
+  String imageUrl = '';
+  String name = '';
+  String id = '';
+
+  Future<void> getPref() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? imageString = pref.getString("imageUrl");
+    String? nameString = pref.getString("name");
+    String? idString = pref.getString("id");
+
+    setState(() {
+      imageUrl = imageString!;
+      name = nameString!;
+      id = idString!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +128,30 @@ class _MainPageState extends State<MainPage> {
                 child: Text('Tidak'),
               ),
               ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () {
+                  CollectionReference products =
+                      firestore.collection("product");
+
+                  products
+                      .where("sisa_stok", isLessThanOrEqualTo: 5)
+                      .get()
+                      .then((value) => value.docs
+                              .where(
+                                  (element) => element['supplier']['id'] == id)
+                              .map((e) {
+                            Map<String, dynamic> product =
+                                e.data() as Map<String, dynamic>;
+
+                            NotificationService.showNotificationScheduled(
+                                title: "Halo, ${name}",
+                                body:
+                                    "${product['nama'].toString()} hanya tersisa ${product['sisa_stok']} stok lagi. Silahkan hubungi Pengelola Toko",
+                                scheduleTime:
+                                    DateTime.now().add(Duration(seconds: 3)));
+                          }).toList());
+
+                  Navigator.of(context).pop(true);
+                },
                 style: ElevatedButton.styleFrom(
                   primary: redColor,
                 ),

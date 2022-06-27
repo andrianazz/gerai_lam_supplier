@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gerai_lam_supplier/pages/privacy_page.dart';
 import 'package:gerai_lam_supplier/pages/user_profile_page.dart';
+import 'package:gerai_lam_supplier/services/notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
 import '../theme.dart';
 import '../widgets/setting_widget.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -13,23 +17,30 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
   @override
   void initState() {
     super.initState();
     getPref();
+    NotificationService.init();
+    tz.initializeTimeZones();
   }
 
   String imageUrl = '';
   String name = '';
+  String id = '';
 
   Future<void> getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? imageString = pref.getString("imageUrl");
     String? nameString = pref.getString("name");
+    String? idString = pref.getString("id");
 
     setState(() {
       imageUrl = imageString!;
       name = nameString!;
+      id = idString!;
     });
   }
 
@@ -80,8 +91,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   name: 'Akun',
                   icon: 'assets/profile_icon.png'),
               SettingWidget(
-                  name: 'Notification', icon: 'assets/promo_icon.png'),
-              SettingWidget(name: 'Bantuan', icon: 'assets/help_icon.png'),
+                  onTap: () {},
+                  name: 'Notification',
+                  icon: 'assets/promo_icon.png'),
+              SettingWidget(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => PrivacyPage(),
+                      ),
+                    );
+                  },
+                  name: 'Bantuan',
+                  icon: 'assets/help_icon.png'),
               SettingWidget(name: 'Tentang', icon: 'assets/about_icon.png'),
             ],
           ),

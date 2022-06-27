@@ -1,10 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gerai_lam_supplier/pages/main_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import '../services/auth_service.dart';
+import '../services/notification_service.dart';
 import '../theme.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,6 +23,9 @@ class _LoginPageState extends State<LoginPage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   late SharedPreferences preferences;
 
+  late AndroidNotificationChannel? channel;
+  late FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
+
   TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -27,6 +35,97 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     init();
+    NotificationService.init();
+    tz.initializeTimeZones();
+
+    requestPermission();
+    loadFCM();
+    listenFCM();
+    getToken();
+  }
+
+  void saveToken() async {
+    CollectionReference tokens = firestore.collection("tokenFCM");
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    String? email = pref.getString("email") ?? '';
+    String? name = pref.getString("name") ?? '';
+    String? tokenFCM = await FirebaseMessaging.instance.getToken();
+    tokens.doc(email).set({'email': email, 'token': tokenFCM, 'name': name});
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) => print(token));
+  }
+
+  void requestPermission() async {
+    FirebaseMessaging message = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await message.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("User grant permission");
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print("user provisional");
+    } else {
+      print("Not ACCEPTED PERMISSION");
+    }
+  }
+
+  void listenFCM() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null && !kIsWeb) {
+        flutterLocalNotificationsPlugin!.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel!.id,
+              channel!.name,
+              styleInformation: BigTextStyleInformation(''),
+              icon: 'launch_background',
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  void loadFCM() async {
+    if (!kIsWeb) {
+      channel = const AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        importance: Importance.high,
+        enableVibration: true,
+      );
+
+      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+      await flutterLocalNotificationsPlugin
+          ?.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel!);
+
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
   }
 
   Future init() async {
@@ -235,6 +334,8 @@ class _LoginPageState extends State<LoginPage> {
         preferences.setString('email', data['email'].toString());
         preferences.setString('phone', data['phone'].toString());
         preferences.setString('zone', data['zone'].toString());
+
+        saveToken();
 
         return AuthService().signIn(
           context,

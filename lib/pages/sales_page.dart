@@ -106,7 +106,7 @@ class _SalesPageState extends State<SalesPage> {
                                     ),
                                   );
                                 } else {
-                                  return Container();
+                                  return SizedBox();
                                 }
                               }).toList(),
                             );
