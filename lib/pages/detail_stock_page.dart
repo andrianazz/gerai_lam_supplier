@@ -131,13 +131,11 @@ class DetailStockPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: stokModel!['stock_in']
                               .map<Widget>(
-                                (stockss) => Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                (stockss) => Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
+                                      width: double.infinity,
                                       child: Text(
                                         '${stockss!['nama']}',
                                         style: primaryText,
@@ -145,9 +143,36 @@ class DetailStockPage extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    Text(
-                                      '${stockss!['stok']}',
-                                      style: primaryText,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              NumberFormat.currency(
+                                                      name: 'Rp. ',
+                                                      decimalDigits: 0)
+                                                  .format(stockss!['harga']),
+                                              style: primaryText,
+                                            ),
+                                            Text(
+                                              NumberFormat.currency(
+                                                      name: 'Rp. ',
+                                                      decimalDigits: 0)
+                                                  .format(
+                                                      stockss!['harga_jual']),
+                                              style: primaryText,
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          '${stockss!['stok']}',
+                                          style: primaryText,
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -172,13 +197,10 @@ class DetailStockPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: stokModel!['stock_return']
                               .map<Widget>(
-                                (stockss) => Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                (stockss) => Column(
                                   children: [
                                     Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
+                                      width: double.infinity,
                                       child: Text(
                                         '${stockss!['nama']}',
                                         style: primaryText,
@@ -186,9 +208,36 @@ class DetailStockPage extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    Text(
-                                      '${stockss!['stok']}',
-                                      style: primaryText,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              NumberFormat.currency(
+                                                      name: 'Rp. ',
+                                                      decimalDigits: 0)
+                                                  .format(stockss!['harga']),
+                                              style: primaryText,
+                                            ),
+                                            Text(
+                                              NumberFormat.currency(
+                                                      name: 'Rp. ',
+                                                      decimalDigits: 0)
+                                                  .format(
+                                                      stockss!['harga_jual']),
+                                              style: primaryText,
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          '${stockss!['stok']}',
+                                          style: primaryText,
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),

@@ -17,6 +17,8 @@ class CatalogPage extends StatefulWidget {
 
 class _CatalogPageState extends State<CatalogPage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  TextEditingController searchController = TextEditingController();
+  String searchText = '';
 
   @override
   void initState() {
@@ -49,6 +51,22 @@ class _CatalogPageState extends State<CatalogPage> {
             child: Column(
               children: [
                 TextField(
+                  onTap: () {
+                    setState(() {
+                      searchController.clear();
+                      searchText = '';
+                    });
+                  },
+                  onChanged: (value) {
+                    Future.delayed(Duration(milliseconds: 1200), () {
+                      setState(() {
+                        searchText = value[0].toUpperCase() +
+                            value.substring(1).toLowerCase();
+                      });
+                    });
+                    print(searchText);
+                  },
+                  textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
                       fillColor: searchColor,
                       filled: true,
@@ -61,10 +79,18 @@ class _CatalogPageState extends State<CatalogPage> {
                 ),
                 SizedBox(height: 30),
                 StreamBuilder<QuerySnapshot>(
-                    stream: products
-                        .where('supplier.id', isEqualTo: idSupplier)
-                        .orderBy('nama')
-                        .snapshots(),
+                    stream: searchText.isNotEmpty
+                        ? products
+                            .where('supplier.id', isEqualTo: idSupplier)
+                            .where('nama',
+                                isGreaterThanOrEqualTo: searchText,
+                                isLessThanOrEqualTo: searchText + "z")
+                            .orderBy('nama')
+                            .snapshots()
+                        : products
+                            .where('supplier.id', isEqualTo: idSupplier)
+                            .orderBy('nama')
+                            .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Wrap(

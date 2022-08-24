@@ -14,12 +14,19 @@ class SalesPage extends StatefulWidget {
   State<SalesPage> createState() => _SalesPageState();
 }
 
+
 class _SalesPageState extends State<SalesPage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  List<DateTime> dates = [];
+  List _daysInMonth = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  DateTime date = DateTime.now();
+  int filterMonth = DateTime.now().month;
 
   @override
   void initState() {
     super.initState();
+    dates = List.generate(
+        3, (index) => DateTime(date.year, date.month - index + 1, 0));
     getAll();
   }
 
@@ -55,6 +62,12 @@ class _SalesPageState extends State<SalesPage> {
                 StreamBuilder<QuerySnapshot>(
                     stream: transactions
                         .orderBy('tanggal', descending: true)
+                        .where('tanggal',
+                            isGreaterThanOrEqualTo:
+                                DateTime(date.year, filterMonth, 1))
+                        .where('tanggal',
+                            isLessThanOrEqualTo: DateTime(date.year,
+                                filterMonth, _daysInMonth[filterMonth]))
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
@@ -127,11 +140,33 @@ class _SalesPageState extends State<SalesPage> {
   Widget header() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
+      child: Column(
         children: [
           Text(
             "Penjualan",
             style: primaryText.copyWith(fontSize: 24),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: dates
+                .map(
+                  (e) => FilterChip(
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                      selectedColor: filterMonth == e.month
+                          ? primaryColor
+                          : Colors.transparent,
+                      selected: filterMonth == e.month,
+                      label: Text(
+                        DateFormat('MMMM yy').format(DateTime(e.year, e.month)),
+                      ),
+                      onSelected: (value) {
+                        setState(() {
+                          filterMonth = e.month;
+                        });
+                        print(e.month);
+                      }),
+                )
+                .toList(),
           ),
         ],
       ),

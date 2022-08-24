@@ -5,8 +5,25 @@ import 'package:gerai_lam_supplier/pages/detail_stock_page.dart';
 import 'package:gerai_lam_supplier/theme.dart';
 import 'package:intl/intl.dart';
 
-class StockPage extends StatelessWidget {
+class StockPage extends StatefulWidget {
   const StockPage({Key? key}) : super(key: key);
+
+  @override
+  State<StockPage> createState() => _StockPageState();
+}
+
+class _StockPageState extends State<StockPage> {
+  List<DateTime> dates = [];
+  List _daysInMonth = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  DateTime date = DateTime.now();
+  int filterMonth = DateTime.now().month;
+
+  @override
+  void initState() {
+    super.initState();
+    dates = List.generate(
+        3, (index) => DateTime(date.year, date.month - index + 1, 0));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +41,14 @@ class StockPage extends StatelessWidget {
                 header(),
                 SizedBox(height: 20),
                 StreamBuilder<QuerySnapshot>(
-                    stream: stocks.snapshots(),
+                    stream: stocks
+                        .where('date_in',
+                            isGreaterThanOrEqualTo:
+                                DateTime(date.year, filterMonth, 1))
+                        .where('date_in',
+                            isLessThanOrEqualTo: DateTime(date.year,
+                                filterMonth, _daysInMonth[filterMonth]))
+                        .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Column(
@@ -100,11 +124,33 @@ class StockPage extends StatelessWidget {
   Widget header() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
+      child: Column(
         children: [
           Text(
             "Stock",
             style: primaryText.copyWith(fontSize: 24),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: dates
+                .map(
+                  (e) => FilterChip(
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+                      selectedColor: filterMonth == e.month
+                          ? primaryColor
+                          : Colors.transparent,
+                      selected: filterMonth == e.month,
+                      label: Text(
+                        DateFormat('MMMM yy').format(DateTime(e.year, e.month)),
+                      ),
+                      onSelected: (value) {
+                        setState(() {
+                          filterMonth = e.month;
+                        });
+                        print(e.month);
+                      }),
+                )
+                .toList(),
           ),
         ],
       ),

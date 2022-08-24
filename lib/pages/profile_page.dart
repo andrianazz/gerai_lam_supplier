@@ -1,5 +1,8 @@
+import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gerai_lam_supplier/pages/contact_page.dart';
+import 'package:gerai_lam_supplier/pages/notification_page.dart';
 import 'package:gerai_lam_supplier/pages/privacy_page.dart';
 import 'package:gerai_lam_supplier/pages/user_profile_page.dart';
 import 'package:gerai_lam_supplier/services/notification_service.dart';
@@ -29,17 +32,21 @@ class _ProfilePageState extends State<ProfilePage> {
 
   String imageUrl = '';
   String name = '';
+  String email = '';
   String id = '';
+  int notifCount = 0;
 
   Future<void> getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? imageString = pref.getString("imageUrl");
     String? nameString = pref.getString("name");
+    String? emailString = pref.getString("email");
     String? idString = pref.getString("id");
 
     setState(() {
       imageUrl = imageString!;
       name = nameString!;
+      email = emailString!;
       id = idString!;
     });
   }
@@ -91,7 +98,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   name: 'Akun',
                   icon: 'assets/profile_icon.png'),
               SettingWidget(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => NotificationPage(),
+                      ),
+                    );
+                  },
                   name: 'Notification',
                   icon: 'assets/promo_icon.png'),
               SettingWidget(
@@ -105,7 +119,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   name: 'Bantuan',
                   icon: 'assets/help_icon.png'),
-              SettingWidget(name: 'Tentang', icon: 'assets/about_icon.png'),
+              SettingWidget(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ContactPage(),
+                      ),
+                    );
+                  },
+                  name: 'Tentang',
+                  icon: 'assets/about_icon.png'),
             ],
           ),
         ),
