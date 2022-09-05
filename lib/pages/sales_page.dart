@@ -14,7 +14,6 @@ class SalesPage extends StatefulWidget {
   State<SalesPage> createState() => _SalesPageState();
 }
 
-
 class _SalesPageState extends State<SalesPage> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<DateTime> dates = [];
@@ -157,7 +156,7 @@ class _SalesPageState extends State<SalesPage> {
                           : Colors.transparent,
                       selected: filterMonth == e.month,
                       label: Text(
-                        DateFormat('MMMM yy').format(DateTime(e.year, e.month)),
+                        DateFormat('MMM yy').format(DateTime(e.year, e.month)),
                       ),
                       onSelected: (value) {
                         setState(() {

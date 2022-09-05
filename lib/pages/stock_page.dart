@@ -141,7 +141,7 @@ class _StockPageState extends State<StockPage> {
                           : Colors.transparent,
                       selected: filterMonth == e.month,
                       label: Text(
-                        DateFormat('MMMM yy').format(DateTime(e.year, e.month)),
+                        DateFormat('MMM yy').format(DateTime(e.year, e.month)),
                       ),
                       onSelected: (value) {
                         setState(() {

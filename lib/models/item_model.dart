@@ -29,7 +29,7 @@ class ItemModel {
     id = json['id'];
     idProduk = json['id_produk'];
     name = json['nama_produk'];
-    imageUrl = json['imageUrl'] ?? '';
+    imageUrl = json['imageUrl'] ?? "";
     capital = json['harga_modal'];
     nett = json['nett'];
     price = json['harga_jual'];
