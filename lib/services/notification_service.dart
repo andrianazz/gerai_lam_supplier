@@ -5,7 +5,8 @@ class NotificationService {
   static final _notifications = FlutterLocalNotificationsPlugin();
 
   static Future init({bool schedule = false}) async {
-    var initAndroidSettings = AndroidInitializationSettings("mipmap/launcher");
+    var initAndroidSettings =
+        AndroidInitializationSettings("mipmap/launcher_icon");
 
     var ios = IOSInitializationSettings();
     final settings =

@@ -20,14 +20,14 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> getPref() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String? imageString = pref.getString("imageUrl");
-    String? nameString = pref.getString("name");
-    String? idString = pref.getString("id");
+    String? imageString = pref.getString("imageUrl") ?? "";
+    String? nameString = pref.getString("name") ?? "";
+    String? idString = pref.getString("id") ?? "";
 
     setState(() {
-      imageUrl = imageString!;
-      name = nameString!;
-      id = idString!;
+      imageUrl = imageString;
+      name = nameString;
+      id = idString;
     });
   }
 

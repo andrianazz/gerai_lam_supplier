@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "339261421060",
+    "firebase_url": "https://phr-marketplace-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "phr-marketplace",
+    "storage_bucket": "phr-marketplace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339261421060:android:63e782989be168f6966751",
+        "android_client_info": {
+          "package_name": "com.galerilamriau.mitraumkm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "339261421060-ijkdb9ml4f7qd9bhiber2of4oqr30krf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqiYRfCU3xkanqIYBvoQuKwzrlpAtbVJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "339261421060-ijkdb9ml4f7qd9bhiber2of4oqr30krf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339261421060:android:ff88fc7a435f3bac966751",
+        "android_client_info": {
+          "package_name": "com.example.gerai_lam_supplier"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "339261421060-ijkdb9ml4f7qd9bhiber2of4oqr30krf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqiYRfCU3xkanqIYBvoQuKwzrlpAtbVJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "339261421060-ijkdb9ml4f7qd9bhiber2of4oqr30krf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339261421060:android:d323dac8f244c1ff966751",
+        "android_client_info": {
+          "package_name": "com.example.toko_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "339261421060-ijkdb9ml4f7qd9bhiber2of4oqr30krf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqiYRfCU3xkanqIYBvoQuKwzrlpAtbVJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "339261421060-ijkdb9ml4f7qd9bhiber2of4oqr30krf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
