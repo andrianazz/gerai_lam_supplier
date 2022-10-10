@@ -31,8 +31,8 @@ class ProductModel {
     id = json['id'];
     nama = json['nama'];
     kode = json['kode'];
-    harga_jual = json['harga_jual'];
-    harga_modal = json['harga_modal'];
+    harga_jual = int.parse(json['harga_jual'].toString());
+    harga_modal = int.parse(json['harga_modal'].toString());
     deskripsi = json['deskripsi'];
     imageUrl = json['imageUrl'].map<String>((e) => e.toString()).toList();
     stok = json['sisa_stok'];

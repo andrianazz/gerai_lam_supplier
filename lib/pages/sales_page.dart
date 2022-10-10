@@ -81,7 +81,8 @@ class _SalesPageState extends State<SalesPage> {
 
                             return Column(
                               children: transaction.items!.map((item) {
-                                if (item.idSupplier == idSupplier) {
+                                if (item.idSupplier == idSupplier &&
+                                    transaction.status == 'Selesai') {
                                   return Card(
                                     child: ListTile(
                                       leading: CircleAvatar(
