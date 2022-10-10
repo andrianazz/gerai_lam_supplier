@@ -44,16 +44,21 @@ class _SplashPageState extends State<SplashPage> {
 
     CollectionReference products = firestore.collection("product");
 
-    products.where("sisa_stok", isLessThanOrEqualTo: 5).get().then((value) =>
-        value.docs.where((element) => element['supplier']['id'] == id).map((e) {
-          Map<String, dynamic> product = e.data() as Map<String, dynamic>;
+    products
+        .where("sisa_stok", isLessThanOrEqualTo: 5)
+        .orderBy('sisa_stok', descending: true)
+        .get()
+        .then((value) => value.docs
+                .where((element) => element['supplier']['id'] == id)
+                .map((e) {
+              Map<String, dynamic> product = e.data() as Map<String, dynamic>;
 
-          NotificationService.showNotification(
-            title: "Halo, ${name}",
-            body:
-                "${product['nama'].toString()} hanya tersisa ${product['sisa_stok']} stok lagi. Silahkan hubungi Pengelola Toko",
-          );
-        }).toList());
+              NotificationService.showNotification(
+                title: "Halo, ${name}",
+                body:
+                    "${product['nama'].toString()} hanya tersisa ${product['sisa_stok']} stok lagi. Silahkan hubungi Pengelola Toko",
+              );
+            }).toList());
 
     super.initState();
   }

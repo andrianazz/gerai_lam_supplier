@@ -50,6 +50,7 @@ class _CatalogPageState extends State<CatalogPage> {
             child: Column(
               children: [
                 TextField(
+                  controller: searchController,
                   onTap: () {
                     setState(() {
                       searchController.clear();
@@ -71,6 +72,17 @@ class _CatalogPageState extends State<CatalogPage> {
                       filled: true,
                       hintText: 'Search for fruits and vegetables',
                       prefixIcon: Icon(Icons.search),
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            searchController.clear();
+                            searchText = '';
+                            setState(() {});
+                          },
+                          icon: Icon(
+                            Icons.highlight_remove_outlined,
+                            color: redColor,
+                            size: 20,
+                          )),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide.none,
