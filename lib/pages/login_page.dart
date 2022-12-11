@@ -287,7 +287,7 @@ class _LoginPageState extends State<LoginPage> {
                       isSupplierPhone(phoneController.text.toString());
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: primaryColor,
+                      backgroundColor: primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),

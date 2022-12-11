@@ -122,7 +122,7 @@ class _MainPageState extends State<MainPage> {
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(false),
                 style: ElevatedButton.styleFrom(
-                  primary: primaryColor,
+                  backgroundColor: primaryColor,
                 ),
                 //return false when click on "NO"
                 child: Text('Tidak'),
@@ -153,7 +153,7 @@ class _MainPageState extends State<MainPage> {
                   Navigator.of(context).pop(true);
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: redColor,
+                  backgroundColor: redColor,
                 ),
                 //return true when click on "Yes"
                 child: Text('Keluar'),
