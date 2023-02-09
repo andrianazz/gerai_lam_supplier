@@ -11,6 +11,8 @@ class DetailStockPage extends StatelessWidget {
   Widget build(BuildContext context) {
     String tglMasuk = DateFormat('dd MMMM yyyy')
         .format((stokModel!['date_in'] as Timestamp).toDate());
+    String waktuMasuk = DateFormat('h:mm a')
+        .format((stokModel!['time_in'] as Timestamp).toDate());
 
     return Scaffold(
       appBar: AppBar(
@@ -94,7 +96,7 @@ class DetailStockPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "${stokModel!['time_in'].toString().substring(10, 15)}",
+                          "${waktuMasuk}",
                           style: primaryText.copyWith(),
                         ),
                       ],
@@ -275,7 +277,7 @@ class DetailStockPage extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: primaryColor,
+                  backgroundColor: primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

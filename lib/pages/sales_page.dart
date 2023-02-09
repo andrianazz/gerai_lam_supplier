@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -65,8 +64,8 @@ class _SalesPageState extends State<SalesPage> {
                             isGreaterThanOrEqualTo:
                                 DateTime(date.year, filterMonth, 1))
                         .where('tanggal',
-                            isLessThanOrEqualTo: DateTime(date.year,
-                                filterMonth, _daysInMonth[filterMonth]))
+                            isLessThan: DateTime(date.year, filterMonth,
+                                _daysInMonth[filterMonth] + 1))
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
@@ -81,8 +80,7 @@ class _SalesPageState extends State<SalesPage> {
 
                             return Column(
                               children: transaction.items!.map((item) {
-                                if (item.idSupplier == idSupplier &&
-                                    transaction.status == 'Selesai') {
+                                if (item.idSupplier == idSupplier) {
                                   return Card(
                                     child: ListTile(
                                       leading: CircleAvatar(
@@ -95,7 +93,7 @@ class _SalesPageState extends State<SalesPage> {
                                       title: Container(
                                         width: 150,
                                         child: Text(
-                                          item.name.toString(),
+                                          "${item.name}",
                                           style: primaryText,
                                           maxLines: 1,
                                           overflow: TextOverflow.clip,
@@ -108,7 +106,7 @@ class _SalesPageState extends State<SalesPage> {
                                           Text(tanggal),
                                           SizedBox(height: 10),
                                           Text(
-                                            '${item.quantity.toString()} items',
+                                            '${item.quantity} items',
                                             style: primaryText.copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: redColor,
@@ -163,7 +161,7 @@ class _SalesPageState extends State<SalesPage> {
                         setState(() {
                           filterMonth = e.month;
                         });
-                        print(e.month);
+                        print('${e.month}  ${e.year}');
                       }),
                 )
                 .toList(),

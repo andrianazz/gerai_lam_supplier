@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gerai_lam_supplier/pages/detail_stock_page.dart';
 import 'package:gerai_lam_supplier/theme.dart';
 import 'package:intl/intl.dart';
+
+import 'detail_stock_page.dart';
 
 class StockPage extends StatefulWidget {
   const StockPage({Key? key}) : super(key: key);
@@ -41,21 +42,28 @@ class _StockPageState extends State<StockPage> {
                 SizedBox(height: 20),
                 StreamBuilder<QuerySnapshot>(
                     stream: stocks
-                        .where('date_in',
+                        .orderBy("date_in", descending: true)
+                        .where("date_in",
                             isGreaterThanOrEqualTo:
                                 DateTime(date.year, filterMonth, 1))
-                        .where('date_in',
-                            isLessThanOrEqualTo: DateTime(date.year,
-                                filterMonth, _daysInMonth[filterMonth]))
+                        .where("date_in",
+                            isLessThan: DateTime(date.year, filterMonth,
+                                _daysInMonth[filterMonth] + 1))
                         .snapshots(),
                     builder: (context, snapshot) {
+                      print(
+                          "${date.year}, ${filterMonth}, ${_daysInMonth[filterMonth]}");
                       if (snapshot.hasData) {
                         return Column(
                           children: snapshot.data!.docs.map((doc) {
                             Map<String, dynamic> stock =
                                 doc.data() as Map<String, dynamic>;
+
                             String tglMasuk = DateFormat('dd MMMM yyyy').format(
                                 (stock['date_in'] as Timestamp).toDate());
+
+                            String waktuMasuk = DateFormat('h:mm a').format(
+                                (stock['time_in'] as Timestamp).toDate());
 
                             return Card(
                               elevation: 2,
@@ -76,8 +84,7 @@ class _StockPageState extends State<StockPage> {
                                 child: ListTile(
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 10),
-                                  title: Text(
-                                      "${tglMasuk}, ${stock['time_in'].toString().substring(10, 15)}"),
+                                  title: Text("${tglMasuk}, ${waktuMasuk}"),
                                   subtitle: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -109,6 +116,7 @@ class _StockPageState extends State<StockPage> {
                           }).toList(),
                         );
                       } else {
+                        print("tak ada");
                         return Center(child: CircularProgressIndicator());
                       }
                     }),
@@ -146,7 +154,7 @@ class _StockPageState extends State<StockPage> {
                         setState(() {
                           filterMonth = e.month;
                         });
-                        print(e.month);
+                        print(e.month.toString() + date.year.toString());
                       }),
                 )
                 .toList(),

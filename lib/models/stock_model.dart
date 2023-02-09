@@ -5,7 +5,7 @@ class StockModel {
   String? noFaktur;
   String? supplier;
   DateTime? dateIn;
-  String? timeIn;
+  DateTime? timeIn;
   List<StockInModel>? stockIn;
   List<StockReturnModel>? stockReturn;
   String? description;
@@ -24,11 +24,11 @@ class StockModel {
     noFaktur = json['noFaktur'];
     supplier = json['supplier']['nama'];
     dateIn = json['date_in'].toDate();
-    timeIn = json['time_in'].toString();
+    timeIn = json['time_in'].toDate();
     stockIn = json['stock_in']!
         .map<StockInModel>((stockData) => StockInModel.fromJson(stockData))
         .toList;
-    stockReturn = json['stockReturn']!
+    stockReturn = json['stock_return']!
         .map<StockReturnModel>(
             (stockData) => StockReturnModel.fromJson(stockData))
         .toList;
@@ -40,9 +40,9 @@ class StockModel {
       'noFaktur': noFaktur,
       'supplier': supplier,
       'date_in': dateIn.toString(),
-      'time_in': timeIn,
+      'time_in': timeIn.toString(),
       'stock_in': stockIn?.map((stockData) => StockInModel().toJson()).toList(),
-      'stockReturn':
+      'stock_return':
           stockReturn?.map((stockData) => StockReturnModel().toJson()).toList(),
       'description': description,
     };

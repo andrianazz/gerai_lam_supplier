@@ -3,6 +3,7 @@ import 'item_model.dart';
 class TransactionModel {
   String? id;
   DateTime? date;
+  DateTime? payDate;
   String? idCostumer;
   String? address;
   List<ItemModel>? items;
@@ -17,6 +18,7 @@ class TransactionModel {
   TransactionModel({
     this.id,
     this.date,
+    this.payDate,
     this.idCostumer,
     this.address,
     this.items,
@@ -32,6 +34,24 @@ class TransactionModel {
   TransactionModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     date = json['tanggal'].toDate();
+    idCostumer = json['id_customer'];
+    address = json['address'];
+    items = json['items']
+        .map<ItemModel>((item) => ItemModel.fromJson(item))
+        .toList();
+    totalProducts = json['total_produk'];
+    totalTransaction = json['total_transaksi'];
+    idCashier = json['id_kasir'];
+    payment = json['payment'];
+    ongkir = json['ongkir'];
+    status = json['status'];
+    keterangan = json['keterangan'];
+  }
+
+  TransactionModel.fromJsonWithPayDate(Map<String, dynamic> json) {
+    id = json['id'];
+    date = json['tanggal'].toDate();
+    payDate = json['tgl_bayar'].toDate();
     idCostumer = json['id_customer'];
     address = json['address'];
     items = json['items']

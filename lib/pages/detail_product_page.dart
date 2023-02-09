@@ -163,7 +163,9 @@ class _DetailProductPageState extends State<DetailProductPage> {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    widget.product!.deskripsi!,
+                    widget.product!.deskripsi != null
+                        ? widget.product!.deskripsi!
+                        : "Tidak Ada Deskripsi",
                     style: primaryText.copyWith(fontSize: 13),
                     overflow: TextOverflow.clip,
                   ),
